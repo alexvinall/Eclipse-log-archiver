@@ -23,6 +23,14 @@ else
     year=$(echo $i | cut -c1-4)
     month=$(echo $i | cut -c5-6)
     echo "Archiving $year-$month..."
-    7z a -t7z -mx=9 Archive/$year-$month-Logs.7z *$i*.out
+    status=$(7z a -t7z -mx=9 Archive/$year-$month-Logs.7z *$i*.out | tail -n 1)
+    echo "7-zip reports: $status"
+    if [ "$status" == "Everything is Ok" ]
+    then
+      echo "$year-$month: archived OK, removing log files."
+      rm *$i*.out
+    else
+      echo "$year-$month: archive error, log files will not be removed."
+    fi
   done
 fi
